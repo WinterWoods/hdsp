@@ -1,0 +1,6 @@
+[submodule "SZORM"]
+	path = SZORM
+	url = E:\\gits\\SZORM
+[submodule "SZHelpers"]
+	path = SZHelpers
+	url = E:\\gits\\SZHelpers
