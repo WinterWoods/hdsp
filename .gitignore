@@ -4,3 +4,6 @@ hosting/bin/
 hosting/obj/
 Services/obj/
 packages/
+.vs/
+Services/bin/
+build/

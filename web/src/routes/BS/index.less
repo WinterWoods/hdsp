@@ -1,0 +1,58 @@
+@import './less/global.less';
+.root-context {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background: url(../../assets/img/bg/bgi1.jpg) no-repeat;
+    .menu-button {
+        padding-left: 10px;
+        width: 40px;
+        background-color: rebeccapurple;
+        position: absolute;
+        right: 0px;
+        bottom: 20px;
+        border-radius: 5px 0px 0px 5px;
+        color: white;
+        font-size: 20px;
+        cursor: pointer;
+        user-select: none;
+        z-index: 99;
+    }
+    .menu-panel-bg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: none;
+        padding: 100px;
+        flex-direction: column;
+        .menu-panel-other {
+            flex: 1;
+        }
+        .menu-panel {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            .menu-row {
+                display: flex;
+                flex: 1;
+                flex-direction: row;
+                .menu-one {
+                    display: flex;
+                    flex: 1;
+                    background-color: #b00ca9;
+                    margin: 5px;
+                    box-shadow: 0 0 14px #cb4fff;
+                    border: 1px solid #c19cdf;
+                }
+                .menu-one:hover {
+                    transform: scale(1.1);
+                    transition: 0.5s;
+                }
+            }
+        }
+    }
+    .menu-panel-bg-show {
+        display: flex;
+    }
+}
