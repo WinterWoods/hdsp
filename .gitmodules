@@ -1,6 +1,6 @@
 [submodule "SZORM"]
 	path = SZORM
-	url = E:\\gits\\SZORM
+	url = https://github.com/WinterWoods/SZORM.git
 [submodule "SZHelpers"]
 	path = SZHelpers
-	url = E:\\gits\\SZHelpers
+	url = https://github.com/WinterWoods/SZHelpers.git
