@@ -9,6 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 
 namespace Services
@@ -107,17 +108,17 @@ namespace Services
                 {
                     msg = File.ReadAllBytes(startUpPath + path);
                 }
-
-                if (fileInfo.Extension == ".html")
-                    context.Response.ContentType = "text/html;charset=UTF-8";
-                else if (fileInfo.Extension == ".js")
-                    context.Response.ContentType = "text/javascript;charset=UTF-8";
-                else if (fileInfo.Extension == ".css")
-                    context.Response.ContentType = "text/css";
-                else
-                {
-                    context.Response.ContentType = "application/octet-stream";
-                }
+                context.Response.ContentType=MimeMapping.GetMimeMapping(fileInfo.Name);
+                //if (fileInfo.Extension == ".html")
+                //    context.Response.ContentType = "text/html;charset=UTF-8";
+                //else if (fileInfo.Extension == ".js")
+                //    context.Response.ContentType = "text/javascript;charset=UTF-8";
+                //else if (fileInfo.Extension == ".css")
+                //    context.Response.ContentType = "text/css";
+                //else
+                //{
+                //    context.Response.ContentType = "application/octet-stream";
+                //}
                 context.Response.StatusCode = 200;
                 context.Response.ContentLength = msg.Length;
                 return context.Response.WriteAsync(msg);

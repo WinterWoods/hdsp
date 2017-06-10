@@ -1,0 +1,49 @@
+.wall-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    .top {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: url(../../assets/images/top.png) no-repeat;
+        background-size: cover;
+        height: 160px;
+        font-size: 40px;
+        color: white;
+    }
+    .content {
+        display: flex;
+        flex: 1;
+    }
+    .buttom {
+        padding: 10px;
+        height: 100px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        background-color: #FAFAFA;
+        .buttom-left {
+            display: flex;
+            color: #108ee9;
+            align-items: center;
+        }
+        .buttom-input {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            .msg-input {
+                font-size: 50px;
+                border: 0px;
+                margin: 0px 20px;
+                background-color: #FAFAFA;
+                border-bottom: 1px solid #e9e9e9;
+            }
+        }
+        .buttom-send {
+            display: flex;
+            align-items: center;
+        }
+    }
+}
