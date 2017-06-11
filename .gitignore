@@ -8,3 +8,5 @@ packages/
 Services/bin/
 build/
 web/.vscode/
+DataBase/bin/
+EntityInfos/bin/

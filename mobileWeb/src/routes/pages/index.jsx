@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { hashHistory, Link } from 'react-router';
-import { Icon, InputItem } from 'antd-mobile';
+import { Icon } from 'antd-mobile';
 
 import './index.less'
 export default class Index extends Component {
@@ -11,6 +11,18 @@ export default class Index extends Component {
       title: 'app',
       open: false,
     };
+  }
+  componentWillMount() {
+
+  }
+  componentDidMount() {
+    document.title = "测试";
+  }
+  componentWillReceiveProps(nextProps) {
+
+  }
+  componentWillUnmount() {
+
   }
   render() {
     return (
@@ -23,15 +35,14 @@ export default class Index extends Component {
         </div>
         <div className="buttom">
           <div className="buttom-left">
-            <Icon type={require('../../assets/fonts/plus.svg')} />
+            <Icon type={require('../../assets/fonts/emoji.svg')} />
           </div>
           <div className="buttom-input">
             <input className="msg-input" />
           </div>
           <div className="buttom-send">
-            <Icon type={require('../../assets/fonts/plus.svg')} />
+            <Icon type={require('../../assets/fonts/addition.svg')} />
           </div>
-
         </div>
       </div>
     );

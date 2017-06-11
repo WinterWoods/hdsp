@@ -106,7 +106,10 @@ namespace Services
                 }
                 else
                 {
-                    msg = File.ReadAllBytes(startUpPath + path);
+                    if (File.Exists(startUpPath + path))
+                        msg = File.ReadAllBytes(startUpPath + path);
+                    else
+                        msg = new byte[0];
                 }
                 context.Response.ContentType=MimeMapping.GetMimeMapping(fileInfo.Name);
                 //if (fileInfo.Extension == ".html")
