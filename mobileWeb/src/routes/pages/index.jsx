@@ -45,7 +45,7 @@ export default class Index extends Component {
                 </div>
                 <div className="msg-content-border">
                   <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
+                    <div className="msg-content-str">测试消息测试消息测试消息测试消啊水电费水电费是水电费</div>
                   </div>
                   <div className="msg-content-sjx">
                     <div className="msg-content-sjx-bg"></div>
@@ -68,7 +68,7 @@ export default class Index extends Component {
                 </div>
                 <div className="msg-content-border">
                   <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
+                    <div className="msg-content-str">测试消息测试消息测试消息测试消啊水电费水电费是水电费</div>
                   </div>
                   <div className="msg-content-sjx">
                     <div className="msg-content-sjx-bg"></div>
@@ -91,7 +91,7 @@ export default class Index extends Component {
                 </div>
                 <div className="msg-content-border">
                   <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
+                    <div className="msg-content-str">测试消息测试消息测试消息测试消啊水电费水电费是水电费</div>
                   </div>
                   <div className="msg-content-sjx">
                     <div className="msg-content-sjx-bg"></div>
@@ -253,7 +253,7 @@ export default class Index extends Component {
                 </div>
                 <div className="msg-content-border">
                   <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
+                    <div className="msg-content-str">测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息</div>
                   </div>
                   <div className="msg-content-sjx">
                     <div className="msg-content-sjx-bg"></div>
