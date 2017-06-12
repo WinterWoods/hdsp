@@ -15,6 +15,121 @@
     .content {
         display: flex;
         flex: 1;
+        flex-direction: column;
+        overflow-x: hidden;
+        overflow-y: auto;
+        .message-list {
+            display: flex;
+            flex-direction: column;
+            .message-one {
+                display: flex;
+                flex-direction: row;
+                padding: 20px;
+                flex-shrink: 0;
+                .msg-head {
+                    display: flex;
+                    padding: 10px;
+                    .msg-head-panel {
+                        margin-top: 15px;
+                        .msg-head-img {
+                            width: 80px;
+                            height: 80px;
+                            border-radius: 100px;
+                            border: 2px solid #DCDCDC;
+                        }
+                    }
+                }
+                .msg-content {
+                    display: flex;
+                    flex-direction: column;
+                    .msg-content-top {
+                        display: flex;
+                        flex-direction: row;
+                        margin-left: 20px;
+                        .msg-content-name {
+                            font-size: 26px;
+                            color: black;
+                            margin-right: 20px;
+                        }
+                        .msg-content-time {
+                            font-size: 26px;
+                            color: #C5C5C5;
+                        }
+                    }
+                    .msg-content-border {
+                        position: relative;
+                        margin: 10px 20px;
+                        .msg-content-panel {
+                            border: 1px solid #DCDCDC;
+                            padding: 15px;
+                            border-radius: 10px;
+                        }
+                        .msg-content-sjx {
+                            width: 0;
+                            height: 0;
+                            border-top: 10px solid transparent;
+                            border-right: 20px solid #C5C5C5;
+                            border-bottom: 10px solid transparent;
+                            position: absolute;
+                            top: 20px;
+                            left: -19px;
+                            .msg-content-sjx-bg {
+                                top: -10px;
+                                left: 2px;
+                                width: 0;
+                                height: 0;
+                                border-top: 10px solid transparent;
+                                border-right: 20px solid white;
+                                border-bottom: 10px solid transparent;
+                                position: absolute;
+                            }
+                        }
+                    }
+                }
+            }
+            .message-one-my {
+                flex-direction: row-reverse;
+                .msg-content {
+                    .msg-content-top {
+                        flex-direction: row-reverse;
+                        .msg-content-name {
+                            margin-left: 20px;
+                        }
+                    }
+                    .msg-content-border {
+                        .msg-content-panel {
+                            border: 1px solid #95BD4D;
+                            background-color: #B1E866;
+                        }
+                        .msg-content-sjx {
+                            border-top: 10px solid transparent;
+                            border-left: 20px solid #95BD4D;
+                            border-bottom: 10px solid transparent;
+                            border-right: 0px;
+                            position: absolute;
+                            left: initial;
+                            right: -19px;
+                            .msg-content-sjx-bg {
+                                right: 2px;
+                                border-top: 10px solid transparent;
+                                border-left: 20px solid #B1E866;
+                                border-bottom: 10px solid transparent;
+                                border-right: 0px;
+                                position: absolute;
+                                left: initial;
+                            }
+                        }
+                    }
+                }
+                .msg-opt {
+                    font-size: 24px;
+                    display: flex;
+                    align-items: flex-end;
+                    margin-bottom: 15px;
+                    color: #108EE9;
+                }
+            }
+        }
     }
     .buttom {
         padding: 10px;

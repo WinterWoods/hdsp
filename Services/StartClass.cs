@@ -38,7 +38,7 @@ namespace Services
             }
             catch (Exception e)
             {
-                Console.WriteLine("启动失败:" + e.Message);
+                Console.WriteLine("启动失败:" + e.InnerException.Message);
                 //throw e;
 
             }
