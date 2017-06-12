@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Owin;
 using System;
@@ -37,27 +38,24 @@ namespace Services
             });
             //config.Filters.Add(new ApiAuthorizeAttribute(new string[] { "FileManager/DownLastVersionExe", "FileManager/UpUsers" }));
             app.UseWebApi(config);
+
+            var serializer = new JsonSerializer()
+            {
+                DateFormatString = "yyyy-MM-dd HH:mm:ss",
+                DateTimeZoneHandling = DateTimeZoneHandling.Local
+            };
+            GlobalHost.DependencyResolver.Register(typeof(JsonSerializer), () => serializer);
+            GlobalHost.HubPipeline.AddModule(new ErrorHandling());
+
             app.Map("/signalr", map =>
             {
-                // Setup the cors middleware to run before SignalR.
-                // By default this will allow all origins. You can 
-                // configure the set of origins and/or http verbs by
-                // providing a cors options with a different policy.
-                //map.UseCors(CorsOptions.AllowAll);
-
                 var hubConfiguration = new HubConfiguration
                 {
-                    EnableJavaScriptProxies = true,
-                    EnableDetailedErrors = true
-                    // You can enable JSONP by uncommenting line below.
-                    // JSONP requests are insecure but some older browsers (and some
-                    // versions of IE) require JSONP to work cross domain
-                    // EnableJSONP = true
+                    //EnableJavaScriptProxies = true,
+                    EnableDetailedErrors = true,
+                    EnableJSONP = true
                 };
-
-                // Run the SignalR pipeline. We're not using MapSignalR
-                // since this branch is already runs under the "/signalr"
-                // path.
+                
                 map.RunSignalR(hubConfiguration);
             });
 
@@ -112,16 +110,6 @@ namespace Services
                         msg = new byte[0];
                 }
                 context.Response.ContentType=MimeMapping.GetMimeMapping(fileInfo.Name);
-                //if (fileInfo.Extension == ".html")
-                //    context.Response.ContentType = "text/html;charset=UTF-8";
-                //else if (fileInfo.Extension == ".js")
-                //    context.Response.ContentType = "text/javascript;charset=UTF-8";
-                //else if (fileInfo.Extension == ".css")
-                //    context.Response.ContentType = "text/css";
-                //else
-                //{
-                //    context.Response.ContentType = "application/octet-stream";
-                //}
                 context.Response.StatusCode = 200;
                 context.Response.ContentLength = msg.Length;
                 return context.Response.WriteAsync(msg);

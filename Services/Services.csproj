@@ -99,6 +99,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Filters\ErrorHandling.cs" />
     <Compile Include="SignalR\ClientManager.cs" />
     <Compile Include="SignalR\MsgManager.cs" />
     <Compile Include="StartClass.cs" />
