@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { hashHistory, Link } from 'react-router';
-import { Icon } from 'antd-mobile';
+import { Icon, Toast, Button } from 'antd-mobile';
 
 import './index.less'
 export default class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: 'app',
-      open: false,
+      inputMessage: "",
+      plusPanelShow: false,
+      plusBtnOrSendBtn: false
     };
   }
   componentWillMount() {
@@ -24,18 +25,44 @@ export default class Index extends Component {
   componentWillUnmount() {
 
   }
+  inputHandleChange(e) {
+    console.log(e.target.value, e.target.value.length);
+    if (e.target.value.length > 0) {
+      this.setState({ inputMessage: e.target.value, plusBtnOrSendBtn: true })
+    }
+    else {
+      this.setState({ inputMessage: e.target.value, plusBtnOrSendBtn: false })
+    }
+
+  }
+  openPlusPanel() {
+    Toast.info('发送照片的按钮被点击了', 1);
+    setTimeout(() => {
+      this.setState({ plusPanelShow: true });
+    }, 150);
+
+  }
+  inputHandleClick() {
+    this.setState({ plusPanelShow: false })
+  }
+  hidePlusPanel() {
+    this.setState({ plusPanelShow: false })
+  }
+  sendMessage() {
+
+  }
   render() {
     return (
       <div className="wall-list">
         <div className="top">
           欢迎光临xxx
         </div>
-        <div className="content">
+        <div className="content" onTouchEnd={this.hidePlusPanel.bind(this)}>
           <div className="message-list">
             <div className="message-one">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -58,7 +85,7 @@ export default class Index extends Component {
             <div className="message-one">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -81,7 +108,7 @@ export default class Index extends Component {
             <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -102,10 +129,10 @@ export default class Index extends Component {
             </div>
 
 
-<div className="message-one message-one-my">
+            <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -128,7 +155,7 @@ export default class Index extends Component {
             <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -151,7 +178,7 @@ export default class Index extends Component {
             <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -174,7 +201,7 @@ export default class Index extends Component {
             <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -197,7 +224,7 @@ export default class Index extends Component {
             <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -220,7 +247,7 @@ export default class Index extends Component {
             <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -243,7 +270,7 @@ export default class Index extends Component {
             <div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
-                  <img  className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0"/>
+                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
                 </div>
               </div>
               <div className="msg-content">
@@ -270,11 +297,16 @@ export default class Index extends Component {
             <Icon type={require('../../assets/fonts/emoji.svg')} />
           </div>
           <div className="buttom-input">
-            <input className="msg-input" />
+            <input className="msg-input" value={this.state.inputMessage} onTouchEnd={this.inputHandleClick.bind(this)} onChange={this.inputHandleChange.bind(this)} />
           </div>
           <div className="buttom-send">
-            <Icon type={require('../../assets/fonts/addition.svg')} />
+            {this.state.plusBtnOrSendBtn ? <Button onTouchEnd={this.sendMessage.bind(this)} size="small" className="btn" type="primary">发送</Button> :
+              <a onTouchEnd={this.openPlusPanel.bind(this)}><Icon type={require('../../assets/fonts/addition.svg')} /></a>}
+
           </div>
+        </div>
+        <div className={this.state.plusPanelShow ? "plusPanel plusPanelShow" : "plusPanel"}>
+          表情或者其他的控件
         </div>
       </div>
     );

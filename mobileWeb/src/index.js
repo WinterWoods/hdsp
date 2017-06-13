@@ -4,6 +4,7 @@ import './index.less';
 // 1. Initialize
 const app = dva();
 
+import './ServiceConn/signalR'
 // 2. Plugins
 // app.use({});
 

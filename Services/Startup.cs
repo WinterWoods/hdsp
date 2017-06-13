@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Owin;
+using Services.Filters;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

@@ -40,10 +40,9 @@
             }, e.exports = t["default"]
         }]);
         flex(100, 1);
-        if (!window.Promise) {
-            document.writeln('<script src="https://as.alipayobjects.com/g/component/es6-promise/3.2.2/es6-promise.min.js"' + '>' + '<' + '/' + 'script>');
-        }
     </script>
+    <script src="/jquery"></script>
+    <script src="/jquery.signalR"></script>
     <link rel="stylesheet" href="index.css" />
 
 </head>
@@ -53,14 +52,6 @@
     <div id="root"></div>
 
     <script src="index.js"></script>
-    <script src="https://as.alipayobjects.com/g/component/fastclick/1.0.6/fastclick.js"></script>
-    <script>
-        if ('addEventListener' in document) {
-            window.addEventListener('load', function() {
-                FastClick.attach(document.body);
-            }, false);
-        }
-    </script>
 </body>
 
 </html>
