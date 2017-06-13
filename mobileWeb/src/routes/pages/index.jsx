@@ -49,6 +49,14 @@ export default class Index extends Component {
     this.setState({ plusPanelShow: false })
   }
   sendMessage() {
+    console.log(window.servcieHub.msgManager);
+    servcieHub.msgManager.messageList("test" + index).done(result => {
+      console.log(result);
+    })
+
+
+    Toast.info(this.state.inputMessage, 1);
+    this.setState({ inputMessage: "", plusBtnOrSendBtn: false });
 
   }
   render() {

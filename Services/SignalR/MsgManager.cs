@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Services.SignalR
@@ -15,7 +16,8 @@ namespace Services.SignalR
         {
             return Task.Factory.StartNew(() =>
             {
-                return new MessageInfo();
+                //Thread.Sleep(new Random(System.Guid.NewGuid().GetHashCode()).Next(1,9)*1000);
+                return new MessageInfo() { Message=model };
             });
         }
     }
