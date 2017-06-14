@@ -21,6 +21,7 @@ export default class App extends React.Component {
   }
   okCallBack() {
     Toast.info('连接成功...', 1);
+    //要拉去是谁,并初始化公众号的本地配置
   }
   errCallBack() {
 

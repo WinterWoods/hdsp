@@ -40,13 +40,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DB.cs" />
+    <Compile Include="DBInit.cs" />
+    <Compile Include="DBUp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\EntityInfos\EntityInfos.csproj">
       <Project>{feaf59ae-362f-4c80-a058-da19c6696ddd}</Project>
       <Name>EntityInfos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SZHelpers\Helpers_4.5.csproj">
+      <Project>{82a22b70-5edf-46d4-8579-60f49adcf56a}</Project>
+      <Name>Helpers_4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SZORM\SZORM_4.5.csproj">
+      <Project>{0aed9844-6935-4ff1-a52d-e3d6ca208de1}</Project>
+      <Name>SZORM_4.5</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -100,6 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Filters\ErrorHandling.cs" />
+    <Compile Include="SessionManager.cs" />
     <Compile Include="SignalR\ClientManager.cs" />
     <Compile Include="SignalR\MsgManager.cs" />
     <Compile Include="StartClass.cs" />

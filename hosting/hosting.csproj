@@ -59,6 +59,10 @@
       <Project>{c272a2e3-6a8e-433f-9c68-d718eea5cd54}</Project>
       <Name>Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SZHelpers\Helpers_4.5.csproj">
+      <Project>{82a22b70-5edf-46d4-8579-60f49adcf56a}</Project>
+      <Name>Helpers_4.5</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

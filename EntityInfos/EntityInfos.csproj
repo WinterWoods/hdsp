@@ -42,7 +42,9 @@
   <ItemGroup>
     <Compile Include="Basic.cs" />
     <Compile Include="MessageInfo.cs" />
+    <Compile Include="OrgInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SZORM\SZORM_4.5.csproj">
