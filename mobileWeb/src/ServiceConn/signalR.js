@@ -5,6 +5,7 @@ var hubList = [{
   name: 'msgManager',
   Fun: [
     'messageList'
+    , 'getUserForCode'
   ]
 }]
 var hubClientList = []

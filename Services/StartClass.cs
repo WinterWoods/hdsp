@@ -33,6 +33,8 @@ namespace Services
                 }
                 var HttpUrl = setting[0];
                 log.WriteInfo("端口" + HttpUrl);
+                Console.WriteLine("准备初始化微信配置:" + WXServiceManager.APPID);
+                
                 WebApp.Start(HttpUrl);
                 Console.WriteLine("启动成功:" + HttpUrl);
             }

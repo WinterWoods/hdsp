@@ -10,7 +10,6 @@ namespace DataBase
     {
         protected override void UpdataDBExce()
         {
-            throw new NotImplementedException();
         }
     }
 }

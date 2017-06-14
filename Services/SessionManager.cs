@@ -18,14 +18,14 @@ namespace Services
         static SessionManager()
         {
             list = new List<SessionModel>();
-            timer = TimerTaskService.CreateTimerTaskService(new TimerInfo { TimerType = TimerType.LoopStop, Hour = 1}, () =>
-            {
-                lock (lockObj)
-                {
-                    list.RemoveAll(r => (DateTime.Now - r.LastOprTime) > new TimeSpan(0, SessionOutTimer, 0));
-                }
-            });
-            timer.Start();
+            //timer = TimerTaskService.CreateTimerTaskService(new TimerInfo { TimerType = TimerType.LoopStop, Hour = 1}, () =>
+            //{
+            //    lock (lockObj)
+            //    {
+            //        list.RemoveAll(r => (DateTime.Now - r.LastOprTime) > new TimeSpan(0, SessionOutTimer, 0));
+            //    }
+            //});
+            //timer.Start();
         }
         public static string NewUser(this HubCallerContext context)
         {

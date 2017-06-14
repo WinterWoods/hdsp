@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EntityInfos;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,7 @@ namespace DataBase
     {
         protected override void Initialization()
         {
-            throw new NotImplementedException();
+            this.OrgInfos.Add(new OrgInfo { OrgName = "测试单位", });
         }
     }
 }
