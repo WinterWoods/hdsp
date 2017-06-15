@@ -10,14 +10,18 @@ export default class Index extends Component {
     this.state = {
       inputMessage: "",
       plusPanelShow: false,
-      plusBtnOrSendBtn: false
+      plusBtnOrSendBtn: false,
+      messageList: []
     };
   }
   componentWillMount() {
 
   }
   componentDidMount() {
-    document.title = "测试";
+    servcieHub.msgManager.messageList().done(result => {
+      this.setState({ messageList: result });
+    })
+
   }
   componentWillReceiveProps(nextProps) {
 
@@ -50,70 +54,58 @@ export default class Index extends Component {
   }
   sendMessage() {
     console.log(window.servcieHub.msgManager);
-    servcieHub.msgManager.messageList("test" + index).done(result => {
-      console.log(result);
-    })
+    servcieHub.msgManager.sendMessage(this.state.inputMessage, "1", "").done(result => {
+      this.setState({ inputMessage: "", plusBtnOrSendBtn: false });
+    }).fail(() => {
+      Toast.info(this.state.inputMessage, 1);
+    });
 
 
-    Toast.info(this.state.inputMessage, 1);
-    this.setState({ inputMessage: "", plusBtnOrSendBtn: false });
 
+
+
+  }
+  renderMsgList() {
+    return this.state.messageList.map((item, index) => {
+      console.log(item);
+      var ismyMsg = false;
+      if (item.User_Key == window.UserInfo.Key) {
+        ismyMsg = true;
+      }
+      return (<div key={item.Key} className={ismyMsg ? "message-one message-one-my" : "message-one"}>
+        <div className="msg-head">
+          <div className="msg-head-panel">
+            <img className="msg-head-img" src={item.WXHeadImgUrl} />
+          </div>
+        </div>
+        <div className="msg-content">
+          <div className="msg-content-top">
+            <div className="msg-content-name">{item.WXNickName}</div>
+            <div className="msg-content-time">{item.SendTime}</div>
+          </div>
+          <div className="msg-content-border">
+            <div className="msg-content-panel">
+              <div className="msg-content-str">{item.Message}</div>
+            </div>
+            <div className="msg-content-sjx">
+              <div className="msg-content-sjx-bg"></div>
+            </div>
+          </div>
+        </div>
+        {ismyMsg ? <div className="msg-opt">删除</div> : ""}
+      </div>);
+    });
   }
   render() {
     return (
       <div className="wall-list">
         <div className="top">
-          欢迎光临xxx
+          {window.OrgInfo.OrgName}
         </div>
         <div className="content" onTouchEnd={this.hidePlusPanel.bind(this)}>
           <div className="message-list">
-            <div className="message-one">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息测试消息测试消息测试消啊水电费水电费是水电费</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div className="message-one">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息测试消息测试消息测试消啊水电费水电费是水电费</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div className="message-one message-one-my">
+            {this.renderMsgList()}
+            {/*<div className="message-one message-one-my">
               <div className="msg-head">
                 <div className="msg-head-panel">
                   <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
@@ -134,169 +126,7 @@ export default class Index extends Component {
                 </div>
               </div>
               <div className="msg-opt">删除</div>
-            </div>
-
-
-            <div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>
-
-            <div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>
-
-            <div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>
-
-            <div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>
-
-            <div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>
-
-            <div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>
-
-            <div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息测试消息</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>
+            </div>*/}
 
           </div>
         </div>

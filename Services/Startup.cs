@@ -39,7 +39,7 @@ namespace Services
             });
             //config.Filters.Add(new ApiAuthorizeAttribute(new string[] { "FileManager/DownLastVersionExe", "FileManager/UpUsers" }));
             app.UseWebApi(config);
-
+            
             var serializer = new JsonSerializer()
             {
                 DateFormatString = "yyyy-MM-dd HH:mm:ss",
@@ -53,20 +53,18 @@ namespace Services
                 var hubConfiguration = new HubConfiguration
                 {
                     //EnableJavaScriptProxies = true,
-                    EnableDetailedErrors = true,
+                    EnableDetailedErrors = false,
                     EnableJSONP = true
                 };
                 
                 map.RunSignalR(hubConfiguration);
             });
-
             bool IsCache = false;
             try
             {
                 IsCache = ConfigurationManager.AppSettings.GetValues("IsCache")[0] == "true" ? true : false;
             }
             catch { }
-
             app.Run(context =>
             {
                 string path = "index.html";

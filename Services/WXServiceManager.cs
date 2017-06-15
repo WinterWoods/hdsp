@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Services
 {
-    public class WXErrorModel
+    public class WXStateModel
     {
         public int errcode { get; set; }
         public string errmsg { get; set; }
@@ -20,7 +20,7 @@ namespace Services
 
         public static string APPSECRET { get; set; }
 
-        public static string  _BasicAccessToken { get; set; }
+        public static string _BasicAccessToken { get; set; }
         /// <summary>
         /// 错误码
         /// </summary>
@@ -30,14 +30,19 @@ namespace Services
 
         static WXServiceManager()
         {
-            APPID= ConfigurationManager.AppSettings.GetValues("APPID")[0];
+            APPID = ConfigurationManager.AppSettings.GetValues("APPID")[0];
             APPSECRET = ConfigurationManager.AppSettings.GetValues("APPSECRET")[0];
             SetErrCodeMap();
             GetWXBasicAccessToken();
         }
 
-        
-        public class TokenModel
+        public static string GetAuthUrl(string bsKey)
+        {
+            string url= System.Web.HttpUtility.UrlEncode(ConfigurationManager.AppSettings.GetValues("AuthUrl")[0], Encoding.UTF8);
+            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + url + "?bs=" + bsKey + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+        }
+
+        public class TokenModel : WXStateModel
         {
             public string access_token { get; set; }
             public int expires_in { get; set; }
@@ -51,23 +56,23 @@ namespace Services
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("准备获取AccessToken");
             HttpClient http = new HttpClient();
-            var result = http.GetAsync("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+ APPID + "&secret="+ APPSECRET).Result;
+            var result = http.GetAsync("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + APPID + "&secret=" + APPSECRET).Result;
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                TokenModel model = JsonConvert.DeserializeObject<TokenModel>(result.Content.ReadAsStringAsync().Result); 
-                if (model != null)
+                TokenModel model = JsonConvert.DeserializeObject<TokenModel>(result.Content.ReadAsStringAsync().Result);
+                if (model.errcode == 0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("获取成功");
                     _BasicAccessToken = model.access_token;
                 }
-            }
-            else
-            {
-                Error(result);
+                else
+                {
+                    Error(model);
+                }
             }
         }
-        public class WebAccessToken
+        public class WebAccessToken : WXStateModel
         {
             public string access_token { get; set; }
             public int expires_in { get; set; }
@@ -88,7 +93,7 @@ namespace Services
                 }
             }
 
-            
+
         }
         /// <summary>
         /// 根据页面code,返回openid
@@ -124,21 +129,15 @@ namespace Services
             var result = http.GetAsync("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + APPID + "&secret=" + APPSECRET + "&code=" + code + "&grant_type=authorization_code").Result;
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                try
+                WebAccessToken model = JsonConvert.DeserializeObject<WebAccessToken>(result.Content.ReadAsStringAsync().Result);
+                if (model.errcode == 0)
                 {
-                    WebAccessToken model = JsonConvert.DeserializeObject<WebAccessToken>(result.Content.ReadAsStringAsync().Result);
-                    if (model != null)
-                    {
-                        Console.ForegroundColor = ConsoleColor.Green;
-                        Console.WriteLine("获取成功");
-                        _WebAccessToken.Add(code, model);
-                        return model;
-                    }
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("获取成功");
+                    _WebAccessToken.Add(code, model);
+                    return model;
                 }
-                catch
-                {
-                    Error(result);
-                }
+                Error(model);
             }
             return null;
         }
@@ -154,7 +153,7 @@ namespace Services
             var result = http.GetAsync("https://api.weixin.qq.com/sns/auth?access_token="+accessToken+"&openid="+openid).Result;
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                WXErrorModel model = JsonConvert.DeserializeObject<WXErrorModel>(result.Content.ReadAsStringAsync().Result);
+                WXStateModel model = JsonConvert.DeserializeObject<WXStateModel>(result.Content.ReadAsStringAsync().Result);
                 if (model.errcode ==0)
                 {
                     return true;
@@ -176,17 +175,18 @@ namespace Services
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 WebAccessToken model = JsonConvert.DeserializeObject<WebAccessToken>(result.Content.ReadAsStringAsync().Result);
-                if (model != null)
+                if (model.errcode==0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("获取成功");
                     return model;
                 }
+                Error(model);
             }
-            Error(result);
+            
             return null;
         }
-        public class WXUserInfo
+        public class WXUserInfo:WXStateModel
         {
             /// <summary>
             /// 用户的唯一标识
@@ -231,26 +231,26 @@ namespace Services
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 WXUserInfo model = JsonConvert.DeserializeObject<WXUserInfo>(result.Content.ReadAsStringAsync().Result);
-                if (model != null)
+                if (model.errcode==0)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("获取成功");
                     return model;
                 }
+                Error(model);
             }
-            Error(result);
+            
             return null;
         }
-        private static void Error(HttpResponseMessage httpResponseMessage)
+        private static void Error(WXStateModel stateModel)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            var str = httpResponseMessage.Content.ReadAsStringAsync().Result;
-            Console.WriteLine("失败啦:" + str);
+            Console.WriteLine("失败啦:" + stateModel.errmsg);
             Console.ForegroundColor = ConsoleColor.Green;
-            WXErrorModel model = JsonConvert.DeserializeObject<WXErrorModel>(str);
-            if (model != null)
+            string errMsg;
+            if(TokenErrCode.TryGetValue(stateModel.errcode,out errMsg))
             {
-                throw new Exception(TokenErrCode[model.errcode]);
+                throw new Exception(errMsg);
             }
             else
             {

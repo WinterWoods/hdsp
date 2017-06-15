@@ -1,18 +1,24 @@
 // // Proxy created on the fly
-import { Toast, WhiteSpace, WingBlank, Button } from 'antd-mobile'
+import { NoticeBar } from 'antd-mobile'
 
 var hubList = [{
   name: 'msgManager',
   Fun: [
     'messageList'
-    , 'getUserForCode'
+    , 'getUserForCode' //获取微信信息
+    , 'getAuthUrl' //获取授权跳转地址
+    , 'getOrgInfo' //获取大屏的信息
+    , 'sendMessage' //发送消息
   ]
 }]
-var hubClientList = []
+var hubClientList = [
+  "exceptionHandler"
+  , "sendMsg"
+]
 
 // 注册所有异常助理
-function errShow (msg) {
-  Toast.info(msg, 1)
+function errShow(msg) {
+
 }
 window.startSignal = function (okCallBack, errCallBack, stateChangedCallBack, disconnectedCallBack) {
   try {
@@ -46,8 +52,8 @@ window.startSignal = function (okCallBack, errCallBack, stateChangedCallBack, di
         }
       })
     })
-    window.clientHub.exceptionHandler = errShow
-    console.log(window.messageServiceConn)
+    console.log(window.clientHub.exceptionHandler)
+
     window.messageServiceConn.stateChanged(function (change) {
       console.log('object')
       if (change.newState == 2) {
