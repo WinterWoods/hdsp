@@ -75,7 +75,7 @@ export default class Index extends Component {
       return (<div key={item.Key} className={ismyMsg ? "message-one message-one-my" : "message-one"}>
         <div className="msg-head">
           <div className="msg-head-panel">
-            <img className="msg-head-img" src={item.WXHeadImgUrl} />
+            <img className="msg-head-img" src={item.WXHeadImgUrl+"/132"} />
           </div>
         </div>
         <div className="msg-content">

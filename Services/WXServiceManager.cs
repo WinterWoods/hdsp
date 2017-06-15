@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,11 +17,13 @@ namespace Services
     }
     public static class WXServiceManager
     {
-        public static string APPID { get; set; }
+        public static string _APPID { get; set; }
 
-        public static string APPSECRET { get; set; }
+        public static string _APPSECRET { get; set; }
 
         public static string _BasicAccessToken { get; set; }
+        public static string _PushToken { get; set; }
+        public static string _EncodingAESKey { get; set; }
         /// <summary>
         /// 错误码
         /// </summary>
@@ -30,16 +33,34 @@ namespace Services
 
         static WXServiceManager()
         {
-            APPID = ConfigurationManager.AppSettings.GetValues("APPID")[0];
-            APPSECRET = ConfigurationManager.AppSettings.GetValues("APPSECRET")[0];
+            _APPID = ConfigurationManager.AppSettings.GetValues("APPID")[0];
+            _APPSECRET = ConfigurationManager.AppSettings.GetValues("APPSECRET")[0];
+            _PushToken= ConfigurationManager.AppSettings.GetValues("PushToken")[0];
+            _EncodingAESKey = ConfigurationManager.AppSettings.GetValues("EncodingAESKey")[0];
             SetErrCodeMap();
             GetWXBasicAccessToken();
         }
-
+        public static string SHA1(string content, Encoding encode)
+        {
+            try
+            {
+                SHA1 sha1 = new SHA1CryptoServiceProvider();
+                byte[] bytes_in = encode.GetBytes(content);
+                byte[] bytes_out = sha1.ComputeHash(bytes_in);
+                sha1.Dispose();
+                string result = BitConverter.ToString(bytes_out);
+                result = result.Replace("-", "");
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("SHA1加密出错：" + ex.Message);
+            }
+        }
         public static string GetAuthUrl(string bsKey)
         {
             string url= System.Web.HttpUtility.UrlEncode(ConfigurationManager.AppSettings.GetValues("AuthUrl")[0], Encoding.UTF8);
-            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + APPID + "&redirect_uri=" + url + "?bs=" + bsKey + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + _APPID + "&redirect_uri=" + url + "?bs=" + bsKey + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
         }
 
         public class TokenModel : WXStateModel
@@ -56,7 +77,7 @@ namespace Services
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("准备获取AccessToken");
             HttpClient http = new HttpClient();
-            var result = http.GetAsync("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + APPID + "&secret=" + APPSECRET).Result;
+            var result = http.GetAsync("https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + _APPID + "&secret=" + _APPSECRET).Result;
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 TokenModel model = JsonConvert.DeserializeObject<TokenModel>(result.Content.ReadAsStringAsync().Result);
@@ -126,7 +147,7 @@ namespace Services
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("准备获取WXWebAccessTokenForCode");
             HttpClient http = new HttpClient();
-            var result = http.GetAsync("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + APPID + "&secret=" + APPSECRET + "&code=" + code + "&grant_type=authorization_code").Result;
+            var result = http.GetAsync("https://api.weixin.qq.com/sns/oauth2/access_token?appid=" + _APPID + "&secret=" + _APPSECRET + "&code=" + code + "&grant_type=authorization_code").Result;
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 WebAccessToken model = JsonConvert.DeserializeObject<WebAccessToken>(result.Content.ReadAsStringAsync().Result);
@@ -171,7 +192,7 @@ namespace Services
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("准备获取ReLoadWebAccessToken");
             HttpClient http = new HttpClient();
-            var result = http.GetAsync("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=" + APPID + "&grant_type=refresh_token&refresh_token="+ refresh_token).Result;
+            var result = http.GetAsync("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=" + _APPID + "&grant_type=refresh_token&refresh_token="+ refresh_token).Result;
             if (result.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 WebAccessToken model = JsonConvert.DeserializeObject<WebAccessToken>(result.Content.ReadAsStringAsync().Result);
@@ -240,6 +261,58 @@ namespace Services
                 Error(model);
             }
             
+            return null;
+        }
+        public class QrcodeRestultModel:WXStateModel
+        {
+            public string ticket { get; set; }
+            public string expire_seconds { get; set; }
+            public string url { get; set; }
+        }
+        public static QrcodeRestultModel CreateQrcodeLIMIT(string scene_str)
+        {
+            HttpClient http = new HttpClient();
+            HttpContent content= new StringContent("{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \""+ scene_str + "\"}}}");
+            var result = http.PostAsync("https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+_BasicAccessToken, content).Result;
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                QrcodeRestultModel model = JsonConvert.DeserializeObject<QrcodeRestultModel>(result.Content.ReadAsStringAsync().Result);
+                if (model.errcode == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("获取成功");
+                    return model;
+                }
+                Error(model);
+            }
+            return null;
+
+        }
+        public class LongUrl2ShortUrl:WXStateModel
+        {
+            public string short_url { get; set; }
+        }
+        /// <summary>
+        /// https://api.weixin.qq.com/cgi-bin/shorturl?access_token=ACCESS_TOKEN
+        /// </summary>
+        /// <param name="longUrl"></param>
+        /// <returns></returns>
+        public static string GetShortUrl(string longUrl)
+        {
+            HttpClient http = new HttpClient();
+            HttpContent content = new StringContent("{\"action\":\"long2short\",\"long_url\":\"" + longUrl + "\"}");
+            var result = http.PostAsync("https://api.weixin.qq.com/cgi-bin/shorturl?access_token=" + _BasicAccessToken, content).Result;
+            if (result.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                LongUrl2ShortUrl model = JsonConvert.DeserializeObject<LongUrl2ShortUrl>(result.Content.ReadAsStringAsync().Result);
+                if (model.errcode == 0)
+                {
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("获取成功");
+                    return model.short_url;
+                }
+                Error(model);
+            }
             return null;
         }
         private static void Error(WXStateModel stateModel)

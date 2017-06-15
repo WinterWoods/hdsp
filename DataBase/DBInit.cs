@@ -11,7 +11,7 @@ namespace DataBase
     {
         protected override void Initialization()
         {
-            this.OrgInfos.Add(new OrgInfo { OrgName = "测试单位", });
+            this.OrgInfos.Add(new OrgInfo { OrgName = "测试单位" });
         }
     }
 }

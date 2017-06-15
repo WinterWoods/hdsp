@@ -36,7 +36,7 @@ namespace Services.SignalR
                     user.WXOpenId = WXUser.openid;
                     user.WXCity = WXUser.city;
                     user.WXCountry = WXUser.country;
-                    user.WXHeadImgUrl = WXUser.headimgurl;
+                    user.WXHeadImgUrl = WXUser.headimgurl.Remove(WXUser.headimgurl.Length-2);
                     user.WXNickName = WXUser.nickname;
                     user.WXProvince = WXUser.province;
                     user.WXSex = WXUser.sex;
@@ -59,13 +59,22 @@ namespace Services.SignalR
                     {
                         throw new Exception("错误的大屏号码");
                     }
-
+                    if (string.IsNullOrEmpty(orgInfo.Ticket))
+                    {
+                        var qrcode= WXServiceManager.CreateQrcodeLIMIT(orgInfo.Key);
+                        
+                        orgInfo.Ticket = qrcode.ticket;
+                        orgInfo.Url = WXServiceManager.GetShortUrl(qrcode.url);
+                        orgInfo=db.OrgInfos.Edit(orgInfo);
+                        db.Save();
+                    }
                     Context.Set("OrgInfo", orgInfo);
                     Groups.Add(Context.ConnectionId, orgInfo.Key);
                     return orgInfo;
                 }
             });
         }
+        
         public class MsgResult:MessageInfo
         {
             public MsgResult(MessageInfo info)
@@ -96,7 +105,7 @@ namespace Services.SignalR
                     MsgResult result = new MsgResult(info);
                     result.WXName = user.WXNickName;
                     result.WXHeadImgUrl = user.WXHeadImgUrl;
-                    context.Clients.Group(org.Key).sendMsg(info);
+                    context.Clients.Group(org.Key).sendMsg(result);
                 }
                 return "ok";
             });
@@ -108,14 +117,22 @@ namespace Services.SignalR
                 return WXServiceManager.GetAuthUrl(((OrgInfo)Context.Get("OrgInfo")).Key.ToString());
             });
         }
-        public Task<List<MessageInfo>> MessageList()
+        public Task<List<MsgResult>> MessageList()
         {
             return Task.Factory.StartNew(() =>
             {
-                using (DB db = new DB())
-                {
-                    var org = (OrgInfo)Context.Get("OrgInfo");
-                    return db.MessageInfos.AsQuery().Where(w=>w.Org_Key==org.Key).OrderByDesc(o=>o.SendTime).Take(20).ToList();
+            using (DB db = new DB())
+            {
+                var org = (OrgInfo)Context.Get("OrgInfo");
+                var message = db.MessageInfos.AsQuery().Where(w => w.Org_Key == org.Key).OrderByDesc(o => o.SendTime).Take(20);
+                    var list = message.LeftJoin<UserInfo>((m, user) => m.User_Key == user.Key).Select((m, u) => new { Message = m, User = u }).ToList();
+                    List<MsgResult> result = new List<MsgResult>();
+                    list.ForEach(f =>
+                    {
+                        result.Add(new MsgResult(f.Message) { WXName = f.User.WXNickName, WXHeadImgUrl = f.User.WXHeadImgUrl });
+                    });
+                    return result;
+                    
                 }
             });
         }
