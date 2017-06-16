@@ -14,7 +14,8 @@ export default class App extends React.Component {
       isLoading: true,
       showErrMsg: false,
       errMsg: "",
-      ErrBSKey: false
+      ErrBSKey: false,
+      msg: {}
     };
   }
   componentWillMount() {
@@ -40,8 +41,13 @@ export default class App extends React.Component {
       console.log("!!!!", err);
       this.setState({ showErrMsg: true, errMsg: err });
     };
+    clientHub.sendMsg = (msg) => {
+      console.log("!!!!!!!" + msg);
+      this.setState({ msg: msg });
+    };
     Toast.info('连接成功...', 1);
     var parms = this.GetRequest();
+    console.log(parms);
     if (parms.bs) {
       //如果不是从二维码参数进来的.就报错.必须包含有参数连接,并且连接是正确的.
       servcieHub.msgManager.getOrgInfo(parms.bs).done(org => {
@@ -53,7 +59,8 @@ export default class App extends React.Component {
           servcieHub.msgManager.getUserForCode(parms.code).done(result => {
             window.UserInfo = result;
             console.log(result);
-            this.setState({ isLoading: false, showErrMsg: false })
+            this.setState({ isLoading: false, showErrMsg: false });
+
           }).fail(err => {
             this.hrefGoAuthUrl();
           });
@@ -64,6 +71,9 @@ export default class App extends React.Component {
       }).fail(err1 => {
         this.setState({ ErrBSKey: true });
       });
+    }
+    else {
+      this.setState({ ErrBSKey: true });
     }
 
 
@@ -113,7 +123,8 @@ export default class App extends React.Component {
         <div className="container">
           {this.state.showErrMsg ? <NoticeBar mode="closable" icon={null}>{this.state.errMsg}</NoticeBar> : ""}
           {this.props && this.props.children && React.cloneElement(this.props.children, {
-            changeTitle: title => this.setState({ title })
+            changeTitle: title => this.setState({ title }),
+            msg: this.state.msg
           }) || <div />}
         </div>
       );

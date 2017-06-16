@@ -2,48 +2,49 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import './page1.less';
 
+import MessageList from './page1/messageList';
+
 import aa from "../../assets/img/defalut/slide-bg.jpg"
-import bb from "../../assets/img/defalut/showqrcode.jpg"
 export default class Page1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isMode: false
+      isMode: false,
+      messageList: []
     };
   }
+  componentDidMount() {
+    servcieHub.msgManager.messageList().done(result => {
+      var len = result.length;
+      console.log("result.length", len);
+      if (len > 4) {
+        result.splice(0, len - 4)
+      }
+      console.log("result.length", result.length);
+      this.setState({ messageList: result });
+    })
+
+  }
+  componentWillReceiveProps(nextProps) {
+    console.log(nextProps.msg, this.props.msg);
+    if (nextProps.msg != this.props.msg) {
+      if (this.state.messageList.length > 3)
+        this.state.messageList.splice(0, 1)
+      this.state.messageList.push(nextProps.msg);
+      this.setState({ messageList: this.state.messageList })
+    }
+  }
+
+
   render() {
     return (<div className="layout-main">
       <div className="layout-top">
         <div className="layout-left">
           <div className="layout-title">
-            银基水世界
+            {window.OrgInfo.OrgName}
           </div>
           <div className="layout-list-panel">
-            <div className="layout-list">
-              <div className="head-img">
-                <div className="img"></div>
-              </div>
-              <div className="mid">
-                <div className="title">
-                  east
-                </div>
-                <div className="message">
-                  我发的测试消息我发的测试消息我发的测试消息我发的测试消息我发的测试消息我发的测试消息我发的测试消息我发的测试消息我发的测试消息我发的测试消息
-                </div>
-              </div>
-              <div className="time">
-                昨天 17:18
-              </div>
-            </div>
-            <div className="layout-list">
-
-            </div>
-            <div className="layout-list">
-
-            </div>
-            <div className="layout-list">
-
-            </div>
+            <MessageList messageList={this.state.messageList} />
           </div>
         </div>
         <div className="layout-right">
@@ -51,7 +52,7 @@ export default class Page1 extends Component {
             <img src={aa} />
           </div>
           <div className="layout-ewm">
-            <img src={bb} />
+            <img src={"https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=" + window.OrgInfo.Ticket} />
           </div>
         </div>
       </div>

@@ -27,8 +27,8 @@ window.startSignal = function (okCallBack, errCallBack, stateChangedCallBack, di
     window.servcieHub = {}
     $.each(hubList, function (i, v) {
       var proxy = window.messageServiceConn.createHubProxy(v.name)
-      proxy.ClientType = 'HubNonAutoProxy'
-      window.servcieHub[v.name] = proxy
+      proxy.ClientType = 'HubNonAutoProxy';
+      window.servcieHub[v.name] = proxy;
       // 注册服务端事件
       console.log('装载服务端事件')
       $.each(v.Fun, function (ii, values) {
@@ -41,12 +41,13 @@ window.startSignal = function (okCallBack, errCallBack, stateChangedCallBack, di
     })
     // 注册回调本地事件
     console.log('装载监听事件')
-    window.clientHub = window.messageServiceConn.createHubProxy('clientManager')
+    window.clientHub = window.messageServiceConn.createHubProxy('clientManager');
+    window.clientHub.ClientType = 'HubNonAutoProxy';
     $.each(hubClientList, function (i, value) {
       window.clientHub.on(value, function () {
         console.log(value + ':', arguments)
         if (window.clientHub[value]) {
-          window.clientHub[value](...arguments)
+          window.clientHub[value](...arguments);
         } else {
           console.log('没有注册' + value + '事件')
         }

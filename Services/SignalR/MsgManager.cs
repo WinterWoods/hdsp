@@ -36,7 +36,7 @@ namespace Services.SignalR
                     user.WXOpenId = WXUser.openid;
                     user.WXCity = WXUser.city;
                     user.WXCountry = WXUser.country;
-                    user.WXHeadImgUrl = WXUser.headimgurl.Remove(WXUser.headimgurl.Length-2);
+                    user.WXHeadImgUrl = WXUser.headimgurl.Remove(WXUser.headimgurl.Length - 2);
                     user.WXNickName = WXUser.nickname;
                     user.WXProvince = WXUser.province;
                     user.WXSex = WXUser.sex;
@@ -61,21 +61,22 @@ namespace Services.SignalR
                     }
                     if (string.IsNullOrEmpty(orgInfo.Ticket))
                     {
-                        var qrcode= WXServiceManager.CreateQrcodeLIMIT(orgInfo.Key);
-                        
+                        var qrcode = WXServiceManager.CreateQrcodeLIMIT(orgInfo.Key);
+
                         orgInfo.Ticket = qrcode.ticket;
                         orgInfo.Url = WXServiceManager.GetShortUrl(qrcode.url);
-                        orgInfo=db.OrgInfos.Edit(orgInfo);
+                        orgInfo = db.OrgInfos.Edit(orgInfo);
                         db.Save();
                     }
                     Context.Set("OrgInfo", orgInfo);
-                    Groups.Add(Context.ConnectionId, orgInfo.Key);
+                    StartClass.log.WriteInfo("添加到组:" + Context.ConnectionId + "-" + orgInfo.Key);
+                    context.Groups.Add(Context.ConnectionId, orgInfo.Key).Wait();
                     return orgInfo;
                 }
             });
         }
-        
-        public class MsgResult:MessageInfo
+
+        public class MsgResult : MessageInfo
         {
             public MsgResult(MessageInfo info)
             {
@@ -84,6 +85,9 @@ namespace Services.SignalR
                 User_Key = info.User_Key;
                 Org_Key = info.Org_Key;
                 Type = info.Type;
+                Key = info.Key;
+                AddTime = info.AddTime;
+                EditTime = info.EditTime;
             }
             public string WXName { get; set; }
             public string WXHeadImgUrl { get; set; }
@@ -100,11 +104,13 @@ namespace Services.SignalR
                     info.Message = msg;
                     info.Org_Key = org.Key;
                     info.User_Key = user.Key;
+
                     info = db.MessageInfos.Add(info);
                     db.Save();
                     MsgResult result = new MsgResult(info);
                     result.WXName = user.WXNickName;
                     result.WXHeadImgUrl = user.WXHeadImgUrl;
+                    StartClass.log.WriteInfo("准备发送消息:" + org.Key + "-" + result.Message);
                     context.Clients.Group(org.Key).sendMsg(result);
                 }
                 return "ok";
@@ -121,18 +127,18 @@ namespace Services.SignalR
         {
             return Task.Factory.StartNew(() =>
             {
-            using (DB db = new DB())
-            {
-                var org = (OrgInfo)Context.Get("OrgInfo");
-                var message = db.MessageInfos.AsQuery().Where(w => w.Org_Key == org.Key).OrderByDesc(o => o.SendTime).Take(20);
+                using (DB db = new DB())
+                {
+                    var org = (OrgInfo)Context.Get("OrgInfo");
+                    var message = db.MessageInfos.AsQuery().Where(w => w.Org_Key == org.Key).OrderByDesc(o => o.SendTime).Take(20);
                     var list = message.LeftJoin<UserInfo>((m, user) => m.User_Key == user.Key).Select((m, u) => new { Message = m, User = u }).ToList();
                     List<MsgResult> result = new List<MsgResult>();
                     list.ForEach(f =>
                     {
                         result.Add(new MsgResult(f.Message) { WXName = f.User.WXNickName, WXHeadImgUrl = f.User.WXHeadImgUrl });
                     });
-                    return result;
-                    
+                    return result.OrderBy(o=>o.SendTime).ToList();
+
                 }
             });
         }

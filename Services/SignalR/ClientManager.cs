@@ -19,7 +19,8 @@ namespace Services.SignalR
         public override Task OnDisconnected(bool stopCalled)
         {
             var org = (OrgInfo)Context.Get("OrgInfo");
-            Groups.Remove(Context.ConnectionId, org.Key);
+            if (org != null)
+                Groups.Remove(Context.ConnectionId, org.Key);
             Context.Logout();
             StartClass.log.WriteInfo("一个用户断开了." + Context.ConnectionId);
             return base.OnDisconnected(stopCalled);

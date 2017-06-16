@@ -1,9 +1,11 @@
 import React from 'react';
 import { Router, Route ,IndexRoute} from 'dva/router';
+
 import IndexPage from './routes/Home';
 import Main from './routes/BS';
 import Page1 from './routes/BS/page1';
 import Page2 from './routes/BS/page2';
+
 function RouterConfig({ history }) {
   return (
     <Router history={history}>

@@ -24,7 +24,13 @@ export default class Index extends Component {
 
   }
   componentWillReceiveProps(nextProps) {
-
+    console.log(nextProps.msg, this.props.msg);
+    if (nextProps.msg != this.props.msg) {
+      if (this.state.messageList.length > 20)
+        this.state.messageList.splice(0, 1)
+      this.state.messageList.push(nextProps.msg);
+      this.setState({ messageList: this.state.messageList })
+    }
   }
   componentWillUnmount() {
 
@@ -59,15 +65,12 @@ export default class Index extends Component {
     }).fail(() => {
       Toast.info(this.state.inputMessage, 1);
     });
-
-
-
-
-
+  }
+  componentDidUpdate() {
+    this.refs.messagelist.scrollTop = this.refs.messagelist.scrollHeight;
   }
   renderMsgList() {
     return this.state.messageList.map((item, index) => {
-      console.log(item);
       var ismyMsg = false;
       if (item.User_Key == window.UserInfo.Key) {
         ismyMsg = true;
@@ -75,24 +78,26 @@ export default class Index extends Component {
       return (<div key={item.Key} className={ismyMsg ? "message-one message-one-my" : "message-one"}>
         <div className="msg-head">
           <div className="msg-head-panel">
-            <img className="msg-head-img" src={item.WXHeadImgUrl+"/132"} />
+            <img className="msg-head-img" src={item.WXHeadImgUrl + "/132"} />
           </div>
         </div>
         <div className="msg-content">
           <div className="msg-content-top">
-            <div className="msg-content-name">{item.WXNickName}</div>
+            <div className="msg-content-name">{item.WXName}</div>
             <div className="msg-content-time">{item.SendTime}</div>
           </div>
           <div className="msg-content-border">
+            {ismyMsg ? <div className="msg-opt">删除</div> : ""}
             <div className="msg-content-panel">
               <div className="msg-content-str">{item.Message}</div>
             </div>
             <div className="msg-content-sjx">
               <div className="msg-content-sjx-bg"></div>
             </div>
+
           </div>
         </div>
-        {ismyMsg ? <div className="msg-opt">删除</div> : ""}
+
       </div>);
     });
   }
@@ -103,31 +108,8 @@ export default class Index extends Component {
           {window.OrgInfo.OrgName}
         </div>
         <div className="content" onTouchEnd={this.hidePlusPanel.bind(this)}>
-          <div className="message-list">
+          <div ref="messagelist" className="message-list">
             {this.renderMsgList()}
-            {/*<div className="message-one message-one-my">
-              <div className="msg-head">
-                <div className="msg-head-panel">
-                  <img className="msg-head-img" src="http://wx.qlogo.cn/mmopen/Q3auHgzwzM7tltmXiceCVHEMjlXwXUUcyZXNNbP64ibIKxdT2c2ibDnQ6uh25ZdeWRuabn770000lBBSRWZjjFiboA/0" />
-                </div>
-              </div>
-              <div className="msg-content">
-                <div className="msg-content-top">
-                  <div className="msg-content-name">张三</div>
-                  <div className="msg-content-time">时间</div>
-                </div>
-                <div className="msg-content-border">
-                  <div className="msg-content-panel">
-                    <div className="msg-content-str">测试消息测试消息测试消息测试消啊水电费水电费是水电费</div>
-                  </div>
-                  <div className="msg-content-sjx">
-                    <div className="msg-content-sjx-bg"></div>
-                  </div>
-                </div>
-              </div>
-              <div className="msg-opt">删除</div>
-            </div>*/}
-
           </div>
         </div>
         <div className="buttom">

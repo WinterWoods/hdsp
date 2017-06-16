@@ -59,8 +59,8 @@ namespace Services
         }
         public static string GetAuthUrl(string bsKey)
         {
-            string url= System.Web.HttpUtility.UrlEncode(ConfigurationManager.AppSettings.GetValues("AuthUrl")[0], Encoding.UTF8);
-            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + _APPID + "&redirect_uri=" + url + "?bs=" + bsKey + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
+            string url= System.Web.HttpUtility.UrlEncode(ConfigurationManager.AppSettings.GetValues("AuthUrl")[0] + "?bs=" + bsKey, Encoding.UTF8);
+            return "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + _APPID + "&redirect_uri=" + url + "&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect";
         }
 
         public class TokenModel : WXStateModel

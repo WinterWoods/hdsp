@@ -39,7 +39,18 @@ namespace Services.Api
                     {
                         StartClass.log.WriteInfo("准备解析xml");
                         //返回xml消息
-                        ReceiveXML(ActionContext);
+                        var result=ReceiveXML(ActionContext);
+                        if (result != null)
+                        {
+                            return result;
+                        }
+                        else
+                        {
+                            return new HttpResponseMessage()
+                            {
+                                Content = new StringContent("success", Encoding.GetEncoding("UTF-8"), "application/x-www-form-urlencoded")
+                            };
+                        }
                     }
                 }
                 else
@@ -59,10 +70,10 @@ namespace Services.Api
             }
             return new HttpResponseMessage()
             {
-                Content = new StringContent("哪来的去哪!", Encoding.GetEncoding("UTF-8"), "application/x-www-form-urlencoded")
+                Content = new StringContent("success", Encoding.GetEncoding("UTF-8"), "application/x-www-form-urlencoded")
             };
         }
-        public void ReceiveXML(HttpActionContext actionContext)
+        public HttpResponseMessage ReceiveXML(HttpActionContext actionContext)
         {
             var requestStr = actionContext.Request.Content.ReadAsStringAsync().Result;
             StartClass.log.WriteInfo(requestStr);
@@ -89,7 +100,7 @@ namespace Services.Api
                         wxXmlModel.Event = rootElement.SelectSingleNode("Event").InnerText;
                         if (wxXmlModel.Event == "subscribe")//关注类型
                         {
-                            wxXmlModel.EventKey = rootElement.SelectSingleNode("EventKey").InnerText;
+                            wxXmlModel.EventKey = rootElement.SelectSingleNode("EventKey").InnerText.Replace("qrscene_","");
                         }
                         if (wxXmlModel.Event == "SCAN")//关注类型
                         {
@@ -100,8 +111,9 @@ namespace Services.Api
                         break;
                 }
                 StartClass.log.WriteInfo(wxXmlModel.MsgType+"-"+ wxXmlModel.Event+"-"+ wxXmlModel.EventKey);
-                ResponseXML(wxXmlModel);//回复消息
+                return ResponseXML(wxXmlModel);//回复消息
             }
+            return null;
         }
         /// <summary>
         /// 回复文本
@@ -169,7 +181,7 @@ namespace Services.Api
                     XML = ReArticle(FromUserName, ToUserName, "测试标题", "测试详情——百度搜索链接", "http://pic.cnblogs.com/avatar/743013/20150521120816.png", "http://www.baidu.com");
                     break;
                 default:
-                    XML = ReText(FromUserName, ToUserName, "无对应关键字");
+                    XML = ReText(FromUserName, ToUserName, "智能回答测试中。");
                     break;
             }
             return XML;
@@ -178,6 +190,7 @@ namespace Services.Api
         {
             string XML = "";
             StartClass.log.WriteInfo(wxXmlModel.MsgType + "-" + wxXmlModel.Event);
+            
             switch (wxXmlModel.MsgType)
             {
                 case "text"://文本回复
@@ -185,18 +198,24 @@ namespace Services.Api
                     break;
                 case "event"://文本回复
                     StartClass.log.WriteInfo("!!!!!!");
-                    using (DB db=new DB())
+                    if (wxXmlModel.Event == "subscribe"|| wxXmlModel.Event == "SCAN")
                     {
-                        StartClass.log.WriteInfo("!"+wxXmlModel.EventKey);
-                        var org = db.OrgInfos.Find(wxXmlModel.EventKey);
-                        StartClass.log.WriteInfo(wxXmlModel.EventKey);
-                        if (org!=null)
+                        using (DB db = new DB())
                         {
-                            StartClass.log.WriteInfo(org.Key);
-                            XML = ReArticle(wxXmlModel.FromUserName, wxXmlModel.ToUserName, org.OrgName, org.OrgName, "http://pic.cnblogs.com/avatar/743013/20150521120816.png", WXServiceManager.GetAuthUrl(org.Key));
+                            StartClass.log.WriteInfo("!" + wxXmlModel.EventKey);
+                            var org = db.OrgInfos.Find(wxXmlModel.EventKey);
+                            StartClass.log.WriteInfo(wxXmlModel.EventKey);
+                            if (org != null)
+                            {
+                                StartClass.log.WriteInfo(org.Key);
+                                XML = ReArticle(wxXmlModel.FromUserName, wxXmlModel.ToUserName, org.OrgName, org.OrgName, "http://pic.cnblogs.com/avatar/743013/20150521120816.png", WXServiceManager.GetAuthUrl(org.Key));
+                            }
                         }
                     }
-                    
+                    else
+                    {
+                        return null;
+                    }
                     break;
                 default://默认回复
                     XML = GetText(wxXmlModel.FromUserName, wxXmlModel.ToUserName, "未知的关键字");
@@ -205,7 +224,7 @@ namespace Services.Api
             StartClass.log.WriteInfo(XML);
             return new HttpResponseMessage()
             {
-                Content = new StringContent(XML, Encoding.GetEncoding("UTF-8"), "application/x-www-form-urlencoded")
+                Content = new StringContent(XML, Encoding.UTF8, "application/xml")
             };
         }
         /// <summary>

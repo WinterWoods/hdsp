@@ -59,6 +59,9 @@
                     .msg-content-border {
                         position: relative;
                         margin: 10px 20px;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: flex-start;
                         .msg-content-panel {
                             border: 1px solid #DCDCDC;
                             padding: 15px;
@@ -102,6 +105,7 @@
                         }
                     }
                     .msg-content-border {
+                        justify-content: flex-end;
                         .msg-content-panel {
                             border: 1px solid #95BD4D;
                             background-color: #B1E866;
@@ -134,6 +138,7 @@
                     color: #108EE9;
                     width: 50px;
                     flex-shrink: 0;
+                    margin-right: 20px;
                 }
             }
         }
@@ -145,6 +150,7 @@
         flex-direction: row;
         align-items: center;
         background-color: #FAFAFA;
+        flex-shrink: 0;
         .buttom-left {
             display: flex;
             color: #108ee9;
