@@ -1,17 +1,71 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types';
 import { hashHistory, Link } from 'react-router';
-import { Icon, Toast, Button } from 'antd-mobile';
+import { Icon, Toast, Button, Grid } from 'antd-mobile';
 
-import './index.less'
+import './index.less';
+import bp from '../../assets/images/bp.png'
+import xp from '../../assets/images/xp.png'
+import yyy from '../../assets/images/yyy.png'
+import tp from '../../assets/images/tp.png'
+import fj from '../../assets/images/fj.png'
 export default class Index extends Component {
   constructor(props) {
     super(props);
+    this.gridData = [{
+      icon: xp,
+      text: '照片',
+    },
+    {
+      icon: bp,
+      text: '霸屏',
+    },
+    {
+      icon: yyy,
+      text: '摇一摇',
+    },
+    {
+      icon: fj,
+      text: '打飞机',
+    },
+    {
+      icon: tp,
+      text: '投票',
+    }];
+    this.gridFaceData = [
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },{ icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },{ icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },{ icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },{ icon: xp },
+      { icon: xp },
+      { icon: xp },
+      { icon: xp },
+    ];
     this.state = {
       inputMessage: "",
       plusPanelShow: false,
+      faceOrOther: false,
       plusBtnOrSendBtn: false,
-      messageList: []
+      messageList: [],
+      gridData: this.gridData,
+      gridFaceData: this.gridFaceData
     };
   }
   componentWillMount() {
@@ -45,10 +99,16 @@ export default class Index extends Component {
     }
 
   }
+  openFacePanel() {
+    Toast.info('发送照片的按钮被点击了', 1);
+    setTimeout(() => {
+      this.setState({ plusPanelShow: true, faceOrOther: false });
+    }, 150);
+  }
   openPlusPanel() {
     Toast.info('发送照片的按钮被点击了', 1);
     setTimeout(() => {
-      this.setState({ plusPanelShow: true });
+      this.setState({ plusPanelShow: true, faceOrOther: true });
     }, 150);
 
   }
@@ -114,7 +174,7 @@ export default class Index extends Component {
         </div>
         <div className="buttom">
           <div className="buttom-left">
-            <Icon type={require('../../assets/fonts/emoji.svg')} />
+            <a onTouchEnd={this.openFacePanel.bind(this)}><Icon type={require('../../assets/fonts/emoji.svg')} /></a>
           </div>
           <div className="buttom-input">
             <input className="msg-input" value={this.state.inputMessage} onTouchEnd={this.inputHandleClick.bind(this)} onChange={this.inputHandleChange.bind(this)} />
@@ -126,7 +186,10 @@ export default class Index extends Component {
           </div>
         </div>
         <div className={this.state.plusPanelShow ? "plusPanel plusPanelShow" : "plusPanel"}>
-          表情或者其他的控件
+          {this.state.faceOrOther ?
+            <Grid data={this.state.gridData} columnNum={5} onClick={(_el, index) => alert(index)} /> :
+            <Grid data={this.state.gridFaceData} columnNum={7} onClick={(_el, index) => alert(index)} />
+          }
         </div>
       </div>
     );
