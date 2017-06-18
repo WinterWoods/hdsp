@@ -1,8 +1,11 @@
 import dva from 'dva';
-import './index.less';
 
+import { browserHistory } from 'dva/router';
+import './index.less';
 // 1. Initialize
-const app = dva();
+const app = dva({
+    history: browserHistory,
+});
 
 import './ServiceConn/signalR'
 // 2. Plugins

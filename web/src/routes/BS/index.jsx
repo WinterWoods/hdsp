@@ -125,6 +125,8 @@ export default class Main extends Component {
 
 Main.propTypes = {
 };
-
+Main.contextTypes = {
+  router: PropTypes.object.isRequired
+};
 Main.defaultProps = {
 };

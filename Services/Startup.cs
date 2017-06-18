@@ -70,7 +70,11 @@ namespace Services
                 string path = "index.html";
                 context.Response.StatusCode = 200;
                 if (context.Request.Path.Value != "/")
-                    path = context.Request.Path.Value;
+                {
+                    if (context.Request.Path.Value.IndexOf('.') > -1)
+                        path = context.Request.Path.Value;
+                }
+                   
                 // New code: Throw an exception for this URI path.
                 if (context.Request.Path.Value == "/jquery")
                 {

@@ -1,0 +1,93 @@
+body {
+    overflow: hidden;
+    background-color: #e9ecf3;
+    #root {
+        height: 100%;
+        width: 100%;
+        display: flex;
+        .mm-layout-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            .mm-layout-logo {
+                min-height: 75px;
+                line-height: 75px;
+                background: #fff;
+                border-color: #0b6fa2;
+                border-width: 0 0 1px;
+                border-style: solid;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-between;
+                font-size: 20px;
+                color: #3e3e3e;
+                flex-grow: 0;
+                flex-shrink: 0;
+                padding: 0 20px;
+                .mm-layout-name {
+                    background: url(../../assets/images/logo.png) no-repeat;
+                    background-size: contain;
+                    padding-left: 90px;
+                }
+                .mm-layout-loginInfo {
+                    display: flex;
+                    .mm-layout-loginInfo-name {}
+                    .mm-layout-exit-btn {
+                        margin-left: 10px;
+                    }
+                }
+            }
+            .mm-layout-mid {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                overflow: hidden;
+                padding: 20px 20px 0 20px;
+                .mm-layout-mid-content {
+                    display: flex;
+                    flex: 1;
+                    overflow: hidden;
+                    .mm-layout-menu {
+                        width: 235px;
+                        display: flex;
+                        flex-direction: column;
+                        .mm-layout-menu-panel {
+                            padding: 10px 0;
+                            background-color: #fff;
+                            border-radius: 6px;
+                        }
+                    }
+                    .mm-layout-content {
+                        display: flex;
+                        flex: 1;
+                        flex-direction: column;
+                        padding: 20px;
+                        background-color: white;
+                        border-radius: 6px;
+                        margin-left: 20px;
+                        .mm-layout-scroll {
+                            display: flex;
+                            flex-direction: column;
+                            flex: 1;
+                            overflow-y: auto;
+                            overflow-x: hidden;
+                        }
+                    }
+                }
+            }
+            .mm-layout-bottom {
+                border-top: 1px solid #e9e9e9;
+                padding: 10px;
+                display: flex;
+                flex-grow: 0;
+                flex-shrink: 0;
+            }
+        }
+        .mm-layout-loading {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+}

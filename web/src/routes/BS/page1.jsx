@@ -4,7 +4,7 @@ import './page1.less';
 
 import MessageList from './page1/messageList';
 
-import aa from "../../assets/img/defalut/slide-bg.jpg"
+import aa from "../../assets/images/defalut/slide-bg.jpg"
 export default class Page1 extends Component {
   constructor(props) {
     super(props);

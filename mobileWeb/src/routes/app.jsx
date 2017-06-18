@@ -135,6 +135,8 @@ export default class App extends React.Component {
 
 App.propTypes = {
 };
-
+App.contextTypes = {
+  router: PropTypes.object.isRequired
+};
 App.defaultProps = {
 };
